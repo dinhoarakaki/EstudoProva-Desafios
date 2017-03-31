@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Cadastro de Pedido</title>
+    </head>
+    <body>
+        <form action="javascript:void(0)" onsubmit="app.salvaLista()">
+            <input type="text" placeholder="Nome do Item" name="nomeEntrada" id="nomeEntrada">
+            <input type="number" placeholder="Valor" name="valorEntrada" id="valorEntrada">
+            <input type="submit" value="salvar"/>
+            <input type="button" value="Cancelar" onclick="app.novo()">
+        </form>
+
+        <p id="contador"></p>
+        <table>
+                <tr>
+                
+                </tr>
+                <tbody id="produtos">
+
+                </tbody>    
+        </table>
+        
+
+    </body>
+
+    <script>
+        var app = new function(){
+            this.elProdutos = document.getElementById("produtos");
+            this.produtos=[];
+            this.nomes=[];
+            this.valores=[];
+            this.itemEditar =-1;
+
+            this.contar = function (qtd){
+                        var elContador = document.getElementById("contador");
+                        var nome="Produto";
+                if (qtd){
+                    if (qtd>1){
+                        nome="Produtos";
+                    }
+                    elContador.innerHTML=qtd +' '+ nome;            
+                }else {
+                    elContador.innerHTML='Sem ' + nome;
+                }
+            };
+
+            this.listarTodos = function(){
+                var dados = '';
+                for (i=0;i<this.produtos.length;i++){
+                    dados+='<tr>';
+                    dados+='<td>'+this.produtos[i]+'</td>';
+                    dados+='<td><button onclick="app.excluir('+i+')">excluir</button></td>';
+                    dados+='<td><button onclick="app.editar('+i+')">editar</button></td>';
+                    
+                    dados+="</tr>";
+                }
+                this.contar(this.produtos.length);
+                this.elProdutos.innerHTML= dados;
+            };
+
+            this.salvaLista=function(){
+                var elNome = document.getElementById("nomeEntrada");
+                var elValor =document.getElementById("valorEntrada");
+                var produto =('nome: '+elNome.value+" valor: "+elValor.value);
+                    
+                if(produto){
+                    if(this.itemEditar==-1){
+                        this.produtos.push(produto);  
+                        this.nomes.push(elNome.value); 
+                        this.valores.push(elValor.value);    
+                    }else {
+                        this.nomes.splice(this.itemEditar, 1, produto.trim());  
+                        this.itemEditar=-1;
+                    }
+                    this.listarTodos();
+                    this.novo();            
+                }else{
+                    this.produtos.splice(this.itemEditar, 1, produto.trim());  
+                    this.itemEditar=-1;
+                }   
+                this.listarTodos();    
+                this.novo();
+            };
+
+            this.novo=function(){
+                this.itemEditar=-1;
+                var nome = document.getElementById("nomeEntrada");
+                var valor = document.getElementById("valorEntrada");
+                nome.value="";
+                valor.value="";
+            };
+
+            this.excluir= function(item){
+                this.produtos.splice(item, 1);
+                this.listarTodos();
+            }
+
+            /*this.editar=function(item){
+                this.itemEditar = item;
+                var nome = this.produtos[item];
+                if(nome){  
+                    var elNome = document.getElementById("nomeEntrada");
+                    var elValor = document.getElementById("valorEntrada");
+                    elNome.value=nome;
+                    elValor.value=value;
+                }
+            }*/
+        };
+
+        app.listarTodos();
+    </script>
+
+</hmtl>
